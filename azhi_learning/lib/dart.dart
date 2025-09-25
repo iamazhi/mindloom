@@ -83,6 +83,18 @@ void main() async{
   String result2 = await fetchData2(); // 注意 main 方法改成了async
   print(result2);
   print("任务完成");
+
+  try {
+    String result3 = await fetchData3();
+    print(result3);
+  } catch (e) {
+    print("出错了: $e");
+  }
+
+  await for (var value in countStream(3)) {
+    print("收到: $value");
+  }
+  print("计数完成");
 }
 
 
@@ -174,4 +186,15 @@ Future<String> fetchData() {
 Future<String> fetchData2() async {
   await Future.delayed(Duration(seconds: 2));
   return "数据加载完成";
+}
+
+Future<String> fetchData3() async {
+  throw Exception("网络错误");
+}
+// stream:多个异步数据
+Stream<int> countStream(int max) async* {
+  for (int i = 1; i <= max; i++) {
+    await Future.delayed(Duration(seconds: 1));
+    yield i;
+  }
 }
